@@ -1,0 +1,75 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+    provider = "prisma-client-js"
+}
+
+datasource db {
+    provider = "postgresql"
+    url      = env("DATABASE_URL")
+}
+
+enum UserStatus {
+    ACTIVE
+    INACTIVE
+    BANNED
+}
+
+model Role {
+    id        String   @id @default(cuid())
+    name      String
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    users           User[]
+    rolePermissions RolePermission[]
+
+    @@map("roles")
+}
+
+// Table untuk menyimpan permission
+model Permission {
+    id        String   @id @default(cuid())
+    name      String
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    rolePermission RolePermission[]
+
+    @@map("permissions")
+}
+
+// Table untuk menyimpan role permission
+model RolePermission {
+    id           String   @id @default(cuid())
+    roleId       String
+    permissionId String
+    createdAt    DateTime @default(now())
+    updatedAt    DateTime @updatedAt
+
+    role       Role       @relation(fields: [roleId], references: [id])
+    permission Permission @relation(fields: [permissionId], references: [id])
+
+    @@map("role_permissions")
+}
+
+// Tabel untuk menyimpan data pengguna
+model User {
+    id          String     @id @default(cuid())
+    roleId      String
+    email       String     @unique
+    username    String     @unique
+    password    String
+    phoneNumber String?
+    name        String?
+    image       String?
+    isVerified  Boolean    @default(false)
+    status      UserStatus @default(ACTIVE)
+    createdAt   DateTime   @default(now())
+    updatedAt   DateTime   @updatedAt
+
+    role Role? @relation(fields: [roleId], references: [id])
+
+    @@map("users")
+}
