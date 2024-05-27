@@ -1,3 +1,5 @@
+'use client'
+
 import Link from 'next/link'
 import { IconChevronDown } from '@tabler/icons-react'
 import { Button, buttonVariants } from './custom/button'

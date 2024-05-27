@@ -7,6 +7,7 @@ import { Button } from './custom/button'
 import Nav from './nav'
 import { cn } from '@/lib/utils'
 import { sidelinks } from '@/data/sidelinks'
+import useHasMounted from '@/hooks/use-mounted'
 
 interface SidebarProps extends React.HTMLAttributes<HTMLElement> {
   isCollapsed: boolean
@@ -18,6 +19,7 @@ export default function Sidebar({
   isCollapsed,
   setIsCollapsed,
 }: SidebarProps) {
+  const hasMounted = useHasMounted()
   const [navOpened, setNavOpened] = useState(false)
 
   /* Make body not scrollable when navBar is opened */
@@ -28,6 +30,27 @@ export default function Sidebar({
       document.body.classList.remove('overflow-hidden')
     }
   }, [navOpened])
+
+  const headerClassName = hasMounted
+    ? isCollapsed
+      ? 'flex items-center'
+      : 'flex items-center gap-2'
+    : 'flex items-center gap-2'
+  const svgClassName = hasMounted
+    ? isCollapsed
+      ? 'transition-all h-6 w-6'
+      : 'transition-all h-8 w-8'
+    : 'transition-all h-8 w-8'
+  const titleClassName = hasMounted
+    ? isCollapsed
+      ? 'invisible w-0'
+      : 'visible w-auto'
+    : 'visible w-auto'
+  const toggleIconClassName = hasMounted
+    ? isCollapsed
+      ? 'h-5 w-5 rotate-180'
+      : 'h-5 w-5'
+    : 'h-5 w-5'
 
   return (
     <aside
@@ -45,11 +68,11 @@ export default function Sidebar({
       <Layout>
         {/* Header */}
         <LayoutHeader className='sticky top-0 justify-between px-4 py-3 shadow md:px-4'>
-          <div className={`flex items-center ${!isCollapsed ? 'gap-2' : ''}`}>
+          <div className={headerClassName}>
             <svg
               xmlns='http://www.w3.org/2000/svg'
               viewBox='0 0 256 256'
-              className={`transition-all ${isCollapsed ? 'h-6 w-6' : 'h-8 w-8'}`}
+              className={svgClassName}
             >
               <rect width='256' height='256' fill='none'></rect>
               <line
@@ -74,10 +97,10 @@ export default function Sidebar({
                 strokeLinejoin='round'
                 strokeWidth='16'
               ></line>
-              <span className='sr-only'>Website Name</span>
             </svg>
+            <span className='sr-only'>Website Name</span>
             <div
-              className={`flex flex-col justify-end truncate ${isCollapsed ? 'invisible w-0' : 'visible w-auto'}`}
+              className={`flex flex-col justify-end truncate ${titleClassName}`}
             >
               <span className='font-medium'>Shadcn Admin</span>
               <span className='text-xs'>Next Auth + ShadcnUI</span>
@@ -114,10 +137,7 @@ export default function Sidebar({
           variant='outline'
           className='absolute -right-5 top-1/2 hidden rounded-full md:inline-flex'
         >
-          <IconChevronsLeft
-            stroke={1.5}
-            className={`h-5 w-5 ${isCollapsed ? 'rotate-180' : ''}`}
-          />
+          <IconChevronsLeft stroke={1.5} className={toggleIconClassName} />
         </Button>
       </Layout>
     </aside>

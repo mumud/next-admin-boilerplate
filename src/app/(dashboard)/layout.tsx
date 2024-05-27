@@ -7,6 +7,7 @@ import ThemeSwitch from '@/components/theme-switch'
 import { UserNav } from '@/components/user-nav'
 import Sidebar from '@/components/sidebar'
 import useIsCollapsed from '@/hooks/use-is-collapsed'
+import useHasMounted from '@/hooks/use-mounted'
 
 const topNav = [
   {
@@ -22,14 +23,21 @@ const topNav = [
 ]
 
 const MainLayout = ({ children }: { children: React.ReactNode }) => {
+  const hasMounted = useHasMounted()
   const [isCollapsed, setIsCollapsed] = useIsCollapsed()
+
+  const mainClassName = `overflow-x-hidden pt-16 transition-[margin] md:overflow-y-hidden md:pt-0 ${isCollapsed ? 'md:ml-14' : 'md:ml-64'} h-full`
 
   return (
     <div className='relative h-full overflow-hidden bg-background'>
       <Sidebar isCollapsed={isCollapsed} setIsCollapsed={setIsCollapsed} />
       <main
         id='content'
-        className={`overflow-x-hidden pt-16 transition-[margin] md:overflow-y-hidden md:pt-0 ${isCollapsed ? 'md:ml-14' : 'md:ml-64'} h-full`}
+        className={
+          hasMounted
+            ? mainClassName
+            : 'h-full overflow-x-hidden pt-16 transition-[margin] md:ml-64 md:overflow-y-hidden md:pt-0'
+        }
       >
         <Layout>
           {/* ===== Top Heading ===== */}

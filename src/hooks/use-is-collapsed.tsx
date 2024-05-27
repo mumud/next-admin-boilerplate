@@ -1,11 +1,13 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import useLocalStorage from './use-local-storage'
 
 export default function useIsCollapsed() {
-  const [isCollapsed, setIsCollapsed] = useLocalStorage({
-    key: 'collapsed-sidebar',
-    defaultValue: false,
-  })
+  // const [isCollapsed, setIsCollapsed] = useLocalStorage({
+  //   key: 'collapsed-sidebar',
+  //   defaultValue: false,
+  // })
+
+  const [isCollapsed, setIsCollapsed] = useState(false)
 
   useEffect(() => {
     const handleResize = () => {

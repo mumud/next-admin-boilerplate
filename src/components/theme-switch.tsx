@@ -2,19 +2,10 @@
 
 import { IconMoon, IconSun } from '@tabler/icons-react'
 import { Button } from './custom/button'
-import { useEffect } from 'react'
 import { useTheme } from 'next-themes'
 
 export default function ThemeSwitch() {
   const { theme, setTheme } = useTheme()
-
-  /* Update theme-color meta tag
-   * when theme is updated */
-  useEffect(() => {
-    const themeColor = theme === 'dark' ? '#020817' : '#fff'
-    const metaThemeColor = document.querySelector("meta[name='theme-color']")
-    metaThemeColor && metaThemeColor.setAttribute('content', themeColor)
-  }, [theme])
 
   return (
     <Button
@@ -23,7 +14,8 @@ export default function ThemeSwitch() {
       className='rounded-full'
       onClick={() => setTheme(theme === 'light' ? 'dark' : 'light')}
     >
-      {theme === 'light' ? <IconMoon size={20} /> : <IconSun size={20} />}
+      <IconSun className='h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0' />
+      <IconMoon className='absolute h-[1.2rem] w-[1.2rem] rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100' />
     </Button>
   )
 }

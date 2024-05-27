@@ -29,7 +29,8 @@ export default function SignIn() {
             className='relative m-auto'
             width={301}
             height={60}
-            alt='Vite'
+            alt='Login Vector'
+            priority
           />
 
           <div className='relative z-20 mt-auto'>
