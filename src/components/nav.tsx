@@ -143,7 +143,7 @@ function NavLinkDropdown({ title, icon, label, sub, closeNav }: NavLinkProps) {
             'ml-auto transition-all group-data-[state="open"]:-rotate-180'
           )}
         >
-          <IconChevronDown stroke={1} />
+          <IconChevronDown stroke={1} size={16} />
         </span>
       </CollapsibleTrigger>
       <CollapsibleContent className='collapsibleDropdown' asChild>

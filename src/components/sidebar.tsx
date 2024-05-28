@@ -102,7 +102,7 @@ export default function Sidebar({
             <div
               className={`flex flex-col justify-end truncate ${titleClassName}`}
             >
-              <span className='font-medium'>Shadcn Admin</span>
+              <span className='font-medium'>Next.js Admin</span>
               <span className='text-xs'>Next Auth + ShadcnUI</span>
             </div>
           </div>
