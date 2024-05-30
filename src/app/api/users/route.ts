@@ -32,7 +32,7 @@ export const GET = async (req: NextRequest) => {
       page: page,
       limit: limit,
       total: users.length,
-      total_filtered: 1,
+      totalFiltered: 1,
       data: users,
     })
   } catch (error) {

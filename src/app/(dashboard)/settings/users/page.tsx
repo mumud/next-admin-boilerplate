@@ -3,7 +3,6 @@
 import { useState } from 'react'
 import {
   type ColumnDef,
-  type ColumnFiltersState,
   type PaginationState,
   type SortingState,
 } from '@tanstack/react-table'
@@ -22,11 +21,8 @@ export default function UserPage() {
   const [sorting, setSorting] = useState<SortingState>([])
 
   // column filters state of the table
-  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
-  const debouncedColumnFilters: ColumnFiltersState = useDebounce(
-    columnFilters,
-    1000
-  )
+  const [filter, setFilter] = useState<string>('')
+  const debouncedFilter: string = useDebounce(filter, 1000)
 
   // pagination state of the table
   const [pagination, setPagination] = useState<PaginationState>({
@@ -36,7 +32,7 @@ export default function UserPage() {
 
   const { data, isLoading } = useGetUsers({
     sorting,
-    columnFilters: debouncedColumnFilters,
+    filter: debouncedFilter,
     pagination,
   })
 
@@ -99,8 +95,8 @@ export default function UserPage() {
           setPagination={setPagination}
           sorting={sorting}
           setSorting={setSorting}
-          columnFilters={columnFilters}
-          setColumnFilters={setColumnFilters}
+          filter={filter}
+          setFilter={setFilter}
         />
       </div>
     </>

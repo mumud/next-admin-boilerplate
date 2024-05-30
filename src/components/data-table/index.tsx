@@ -3,7 +3,6 @@
 import { type Dispatch, type SetStateAction, useEffect, useState } from 'react'
 import {
   type ColumnDef,
-  type ColumnFiltersState,
   type SortingState,
   type VisibilityState,
   type PaginationState,
@@ -37,15 +36,15 @@ export interface DataTableProps<TData, TValue> {
   setPagination?: Dispatch<SetStateAction<PaginationState>>
   sorting?: SortingState
   setSorting?: Dispatch<SetStateAction<SortingState>>
-  columnFilters?: ColumnFiltersState
-  setColumnFilters?: Dispatch<SetStateAction<ColumnFiltersState>>
+  filter: string
+  setFilter: Dispatch<SetStateAction<string>>
 }
 
 export interface UseGetTableResponseType<TData> {
   limit: number
   page: number
   total: number
-  total_filtered: number
+  totalFiltered: number
   data: TData[]
 }
 
@@ -60,8 +59,8 @@ export function DataTable<TData, TValue>({
   sorting = [],
   setSorting,
   setPagination,
-  columnFilters = [],
-  setColumnFilters,
+  filter,
+  setFilter,
 }: DataTableProps<TData, TValue>) {
   const [rowSelection, setRowSelection] = useState({})
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({})
@@ -74,12 +73,10 @@ export function DataTable<TData, TValue>({
       pagination,
       columnVisibility,
       rowSelection,
-      columnFilters,
+      globalFilter: filter,
     },
-    enableRowSelection: true,
     onRowSelectionChange: setRowSelection,
     onSortingChange: setSorting,
-    onColumnFiltersChange: setColumnFilters,
     onColumnVisibilityChange: setColumnVisibility,
     getCoreRowModel: getCoreRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
@@ -88,6 +85,7 @@ export function DataTable<TData, TValue>({
     getFacetedRowModel: getFacetedRowModel(),
     getFacetedUniqueValues: getFacetedUniqueValues(),
     manualPagination: true,
+    onGlobalFilterChange: setFilter,
   })
 
   // to reset page index to first page
@@ -98,11 +96,17 @@ export function DataTable<TData, TValue>({
         pageSize: pagination.pageSize,
       }))
     }
-  }, [columnFilters, setPagination])
+  }, [setPagination])
 
   return (
     <div className='space-y-4'>
-      <DataTableToolbar table={table} />
+      <DataTableToolbar
+        table={table}
+        filter={filter}
+        onFilterChange={(e) => {
+          setFilter(e.target.value)
+        }}
+      />
       <div className='rounded-md border'>
         <Table>
           <TableHeader>
