@@ -3,25 +3,23 @@ import { hash } from "bcrypt";
 
 const db = new PrismaClient();
 
-async function createRole() {
+async function createRole(name: string) {
     return await db.role.create({
         data: {
-            name: "Administrator",
+            name,
         },
     });
 }
 
 async function createUser() {
-    // get role
-    let role = await db.role.findFirst({
+    // get role admin
+    const roleAdmin = await db.role.findFirst({
         where: {
             name: "Administrator",
         },
     });
 
-    if (!role) {
-        role = await createRole();
-    }
+    if (!roleAdmin) return;
 
     const password = await hash("password", 12);
     await db.user.create({
@@ -32,16 +30,49 @@ async function createUser() {
             password,
             role: {
                 connect: {
-                    id: role?.id,
+                    id: roleAdmin?.id,
                 },
             },
             isVerified: true,
         },
     });
+
+    // get role user
+    const roleUser = await db.role.findFirst({
+        where: {
+            name: "User",
+        },
+    });
+
+    if (!roleUser) return;
+
+    const users = [];
+    for (let i = 1; i <= 200; i++) {
+        users.push({
+          name: `User${i}`,
+          email: `user${i}@devpintar.com`,
+          username: `user${i}`,
+          password,
+          role: {
+            connect: {
+              id: roleUser?.id, // Sesuaikan dengan id role yang diinginkan
+            },
+          },
+          isVerified: true,
+        });
+      }
+  
+      await Promise.all(users.map(user => db.user.create({ data: user })));
+  
+      console.log('200 dummy users created successfully');
 }
 
 async function main() {
-    await createRole();
+    await db.user.deleteMany()
+    await db.role.deleteMany()
+
+    await createRole("Administrator");
+    await createRole("User");
     await createUser();
 }
 main()

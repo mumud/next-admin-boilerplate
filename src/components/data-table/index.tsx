@@ -1,6 +1,7 @@
 'use client'
 
 import { type Dispatch, type SetStateAction, useEffect, useState } from 'react'
+import Image from 'next/image'
 import {
   type ColumnDef,
   type SortingState,
@@ -24,9 +25,11 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
+import { Skeleton } from '@/components/ui/skeleton'
 
 import { DataTablePagination } from './pagination'
 import { DataTableToolbar } from './toolbar'
+import EmptyVector from '@/assets/empty.svg'
 
 export interface DataTableProps<TData, TValue> {
   isLoading: boolean
@@ -54,7 +57,7 @@ export function DataTable<TData, TValue>({
   columns,
   pagination = {
     pageIndex: 0,
-    pageSize: 20,
+    pageSize: 10,
   },
   sorting = [],
   setSorting,
@@ -75,6 +78,9 @@ export function DataTable<TData, TValue>({
       rowSelection,
       globalFilter: filter,
     },
+    manualPagination: true,
+    manualSorting: true,
+    manualFiltering: true,
     onRowSelectionChange: setRowSelection,
     onSortingChange: setSorting,
     onColumnVisibilityChange: setColumnVisibility,
@@ -84,8 +90,9 @@ export function DataTable<TData, TValue>({
     getSortedRowModel: getSortedRowModel(),
     getFacetedRowModel: getFacetedRowModel(),
     getFacetedUniqueValues: getFacetedUniqueValues(),
-    manualPagination: true,
     onGlobalFilterChange: setFilter,
+    onPaginationChange: setPagination,
+    pageCount: Math.ceil((data?.totalFiltered ?? 0) / (data?.limit ?? 1)),
   })
 
   // to reset page index to first page
@@ -129,11 +136,19 @@ export function DataTable<TData, TValue>({
           </TableHeader>
           <TableBody>
             {isLoading ? (
-              <TableRow>
-                <TableCell colSpan={columns.length} className='text-center'>
-                  Loading...
-                </TableCell>
-              </TableRow>
+              <>
+                {Array(10)
+                  .fill({})
+                  .map((_, s) => (
+                    <TableRow key={s}>
+                      {columns.map((_, c) => (
+                        <TableCell key={c} className='text-center'>
+                          <Skeleton className='h-[32px] px-3 py-2' />
+                        </TableCell>
+                      ))}
+                    </TableRow>
+                  ))}
+              </>
             ) : table.getRowModel().rows?.length ? (
               table.getRowModel().rows.map((row) => (
                 <TableRow
@@ -152,8 +167,21 @@ export function DataTable<TData, TValue>({
               ))
             ) : (
               <TableRow>
-                <TableCell colSpan={columns.length} className='text-center'>
-                  No results.
+                <TableCell
+                  colSpan={columns.length}
+                  className='h-[500px] text-center sm:h-[300px]'
+                >
+                  <div>
+                    <Image
+                      src={EmptyVector as string}
+                      className='relative m-auto mb-3'
+                      width={200}
+                      height={60}
+                      alt='No results found.'
+                      priority
+                    />
+                    <span>No results found.</span>
+                  </div>
                 </TableCell>
               </TableRow>
             )}
