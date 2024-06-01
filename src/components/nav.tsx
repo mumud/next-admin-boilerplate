@@ -22,22 +22,28 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from './ui/tooltip'
-import { type SideLink } from '@/data/sidelinks'
+import { sidelinks, type SideLink } from '@/data/sidelinks'
 import { cn } from '@/lib/utils'
 import useCheckActiveNav from '@/hooks/use-check-active-nav'
+import { type UseMenuResponse } from '@/hooks/use-menu'
+import { Skeleton } from './ui/skeleton'
 
 interface NavProps extends React.HTMLAttributes<HTMLDivElement> {
+  isLoading: boolean
   isCollapsed: boolean
-  links: SideLink[]
+  menus?: UseMenuResponse[]
   closeNav: () => void
 }
 
 export default function Nav({
-  links,
+  isLoading,
+  menus,
   isCollapsed,
   className,
   closeNav,
 }: NavProps) {
+  const links: SideLink[] = sidelinks(menus)
+
   const renderLink = ({ sub, ...rest }: SideLink) => {
     const key = `${rest.title}-${rest.href}`
     if (isCollapsed && sub)
@@ -53,7 +59,7 @@ export default function Nav({
     if (isCollapsed)
       return <NavLinkIcon {...rest} key={key} closeNav={closeNav} />
 
-    if (sub)
+    if (sub?.length)
       return (
         <NavLinkDropdown {...rest} sub={sub} key={key} closeNav={closeNav} />
       )
@@ -70,7 +76,19 @@ export default function Nav({
     >
       <TooltipProvider delayDuration={0}>
         <nav className='grid gap-1 group-[[data-collapsed=true]]:justify-center group-[[data-collapsed=true]]:px-2'>
-          {links.map(renderLink)}
+          {isLoading ? (
+            <>
+              {Array(10)
+                .fill({})
+                .map((_, i) => (
+                  <div key={i} className='mb-2 px-2'>
+                    <Skeleton className='h-[40px]' />
+                  </div>
+                ))}
+            </>
+          ) : (
+            links.map(renderLink)
+          )}
         </nav>
       </TooltipProvider>
     </div>

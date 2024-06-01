@@ -12,3 +12,4 @@
 !README.md
 !CHANGELOG.md
 !.eslintrc.cjs
+!/prisma/seed.ts

@@ -1,6 +1,12 @@
 'use client'
 
-import { type Dispatch, type SetStateAction, useEffect, useState } from 'react'
+import {
+  type Dispatch,
+  type SetStateAction,
+  type CSSProperties,
+  useEffect,
+  useState,
+} from 'react'
 import Image from 'next/image'
 import {
   type ColumnDef,
@@ -51,6 +57,8 @@ export interface UseGetTableResponseType<TData> {
   data: TData[]
 }
 
+const DEFAULT_COLUMN_WIDTH = 150
+
 export function DataTable<TData, TValue>({
   isLoading,
   data,
@@ -93,6 +101,7 @@ export function DataTable<TData, TValue>({
     onGlobalFilterChange: setFilter,
     onPaginationChange: setPagination,
     pageCount: Math.ceil((data?.totalFiltered ?? 0) / (data?.limit ?? 1)),
+    rowCount: data?.total,
   })
 
   // to reset page index to first page
@@ -120,8 +129,17 @@ export function DataTable<TData, TValue>({
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
                 {headerGroup.headers.map((header) => {
+                  const styles: CSSProperties =
+                    header.getSize() !== DEFAULT_COLUMN_WIDTH
+                      ? { width: `${header.getSize()}px` }
+                      : {}
+
                   return (
-                    <TableHead key={header.id} colSpan={header.colSpan}>
+                    <TableHead
+                      key={header.id}
+                      colSpan={header.colSpan}
+                      style={styles}
+                    >
                       {header.isPlaceholder
                         ? null
                         : flexRender(

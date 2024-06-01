@@ -13,9 +13,17 @@ import {
 
 interface DataTableRowActionsProps<T> {
   row: Row<T>
+  onView?: (row: T) => void
+  onEdit?: (row: T) => void
+  onDelete?: (row: T) => void
 }
 
-export function DataTableRowActions<T>({ row }: DataTableRowActionsProps<T>) {
+export function DataTableRowActions<T>({
+  row,
+  onView,
+  onEdit,
+  onDelete,
+}: DataTableRowActionsProps<T>) {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -28,11 +36,25 @@ export function DataTableRowActions<T>({ row }: DataTableRowActionsProps<T>) {
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align='end' className='w-[160px]'>
-        <DropdownMenuItem>Edit</DropdownMenuItem>
-        <DropdownMenuItem>
-          Delete
-          <DropdownMenuShortcut>⌘⌫</DropdownMenuShortcut>
-        </DropdownMenuItem>
+        {onView && (
+          <DropdownMenuItem onClick={() => onView(row.original)}>
+            View
+          </DropdownMenuItem>
+        )}
+        {onEdit && (
+          <DropdownMenuItem onClick={() => onEdit(row.original)}>
+            Edit
+          </DropdownMenuItem>
+        )}
+        {onDelete && (
+          <DropdownMenuItem
+            onClick={() => onDelete(row.original)}
+            className='text-red-500'
+          >
+            Delete
+            <DropdownMenuShortcut>⌘⌫</DropdownMenuShortcut>
+          </DropdownMenuItem>
+        )}
       </DropdownMenuContent>
     </DropdownMenu>
   )

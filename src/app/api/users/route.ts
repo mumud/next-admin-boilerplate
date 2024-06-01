@@ -1,13 +1,36 @@
-import { db } from '@/server/db'
 import { type NextRequest, NextResponse } from 'next/server'
+import { type Prisma } from '@prisma/client'
+import { db } from '@/server/db'
+
+const validFields = ['createdAt', 'phone', 'name', 'username', 'email']
+const validDirections = ['asc', 'desc']
 
 export const GET = async (req: NextRequest) => {
   try {
     const searchParams = req.nextUrl.searchParams
     const q = searchParams.get('q') ?? ''
-    const page = Number(searchParams?.get('page') ?? '1')
-    const limit = Number(searchParams?.get('limit') ?? '10')
+    const sortBy = searchParams.get('sortBy')
+    const page = Number(searchParams.get('page') ?? '1')
+    const limit = Number(searchParams.get('limit') ?? '10')
     const offset = (page - 1) * limit
+
+    let orderBy: Prisma.UserOrderByWithRelationInput = {
+      createdAt: 'desc', // Default order
+    }
+    if (sortBy) {
+      const [field, direction] = sortBy.split(':')
+
+      if (
+        field &&
+        direction &&
+        validFields.includes(field) &&
+        validDirections.includes(direction)
+      ) {
+        orderBy = {
+          [field]: direction,
+        }
+      }
+    }
 
     const [users, totalFiltered] = await Promise.all([
       db.user.findMany({
@@ -30,9 +53,7 @@ export const GET = async (req: NextRequest) => {
             { email: { contains: q, mode: 'insensitive' } },
           ],
         },
-        orderBy: {
-          createdAt: 'desc',
-        },
+        orderBy: orderBy,
       }),
       db.user.count({
         where: {

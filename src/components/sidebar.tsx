@@ -6,8 +6,8 @@ import { Layout, LayoutHeader } from './custom/layout'
 import { Button } from './custom/button'
 import Nav from './nav'
 import { cn } from '@/lib/utils'
-import { sidelinks } from '@/data/sidelinks'
 import useHasMounted from '@/hooks/use-mounted'
+import { useMenu } from '@/hooks/use-menu'
 
 interface SidebarProps extends React.HTMLAttributes<HTMLElement> {
   isCollapsed: boolean
@@ -21,6 +21,7 @@ export default function Sidebar({
 }: SidebarProps) {
   const hasMounted = useHasMounted()
   const [navOpened, setNavOpened] = useState(false)
+  const { data: menus, isLoading: isLoadingMenu } = useMenu()
 
   /* Make body not scrollable when navBar is opened */
   useEffect(() => {
@@ -123,11 +124,12 @@ export default function Sidebar({
 
         {/* Navigation links */}
         <Nav
+          isLoading={isLoadingMenu}
           id='sidebar-menu'
           className={`h-full flex-1 overflow-auto ${navOpened ? 'max-h-screen' : 'max-h-0 py-0 md:max-h-screen md:py-2'}`}
           closeNav={() => setNavOpened(false)}
           isCollapsed={isCollapsed}
-          links={sidelinks}
+          menus={menus}
         />
 
         {/* Scrollbar width toggle button */}

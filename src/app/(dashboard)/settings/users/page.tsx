@@ -1,20 +1,15 @@
 'use client'
 
-import { useState } from 'react'
-import {
-  type ColumnDef,
-  type PaginationState,
-  type SortingState,
-} from '@tanstack/react-table'
-import { type User } from '@prisma/client'
+import { useCallback, useMemo, useState } from 'react'
+import { type PaginationState, type SortingState } from '@tanstack/react-table'
 import { IconPlus } from '@tabler/icons-react'
+import { type User } from '@prisma/client'
 
 import { Button } from '@/components/custom/button'
 import { DataTable } from '@/components/data-table'
-import { DataTableRowActions } from '@/components/data-table/row-actions'
 import { useDebounce } from '@/hooks/use-debounce'
-import { DataTableColumnHeader } from '@/components/data-table/column-header'
 import { useGetUsers } from '@/api/useGetUsers'
+import { userColumns } from './columns'
 
 export default function UserPage() {
   // sorting state of the table
@@ -36,40 +31,22 @@ export default function UserPage() {
     pagination,
   })
 
-  const userColumns: ColumnDef<User>[] = [
-    {
-      accessorKey: 'name',
-      header: ({ column }) => (
-        <DataTableColumnHeader column={column} title='Full Name' />
-      ),
-    },
-    {
-      accessorKey: 'username',
-      header: ({ column }) => (
-        <DataTableColumnHeader column={column} title='Username' />
-      ),
-    },
-    {
-      accessorKey: 'email',
-      header: ({ column }) => (
-        <DataTableColumnHeader column={column} title='Email' />
-      ),
-    },
-    {
-      accessorKey: 'role.name',
-      header: ({ column }) => (
-        <DataTableColumnHeader column={column} title='Role' />
-      ),
-    },
-    {
-      id: 'actions',
-      cell: ({ row }) => (
-        <div className='flex items-center justify-center gap-2'>
-          <DataTableRowActions row={row} />
-        </div>
-      ),
-    },
-  ]
+  const onView = useCallback((user: User) => {
+    console.log('onView id', { user })
+  }, [])
+
+  const onEdit = useCallback((user: User) => {
+    console.log('onEdit id', { user })
+  }, [])
+
+  const onDelete = useCallback((user: User) => {
+    console.log('onDelete id', { user })
+  }, [])
+
+  const columns = useMemo(
+    () => userColumns({ onView, onEdit, onDelete }),
+    [onDelete, onEdit, onView]
+  )
 
   return (
     <>
@@ -92,7 +69,7 @@ export default function UserPage() {
         <DataTable
           isLoading={isLoading}
           data={data}
-          columns={userColumns}
+          columns={columns}
           pagination={pagination}
           setPagination={setPagination}
           sorting={sorting}

@@ -24,8 +24,39 @@ model Role {
 
     users           User[]
     rolePermissions RolePermission[]
+    roleMenus       RoleMenu[]
 
     @@map("roles")
+}
+
+model Menu {
+    id        String   @id @default(cuid())
+    icon      String?
+    name      String
+    path      String
+    parent_id String?
+    order     Int      @default(0)
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    parent    Menu?      @relation("MenuParent", fields: [parent_id], references: [id], onDelete: Cascade)
+    children  Menu[]     @relation("MenuParent")
+    roleMenus RoleMenu[]
+
+    @@map("menus")
+}
+
+model RoleMenu {
+    id        String   @id @default(cuid())
+    roleId    String
+    menuId    String
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    menu Menu @relation(fields: [menuId], references: [id], onDelete: Cascade)
+    role Role @relation(fields: [roleId], references: [id], onDelete: Cascade)
+
+    @@map("role_menus")
 }
 
 // Table untuk menyimpan permission
@@ -48,8 +79,8 @@ model RolePermission {
     createdAt    DateTime @default(now())
     updatedAt    DateTime @updatedAt
 
-    role       Role       @relation(fields: [roleId], references: [id])
-    permission Permission @relation(fields: [permissionId], references: [id])
+    role       Role       @relation(fields: [roleId], references: [id], onDelete: Cascade)
+    permission Permission @relation(fields: [permissionId], references: [id], onDelete: Cascade)
 
     @@map("role_permissions")
 }

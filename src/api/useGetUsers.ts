@@ -1,7 +1,8 @@
+import api from '@/lib/api'
 import { type User } from '@prisma/client'
 import { useQuery } from '@tanstack/react-query'
 import { type PaginationState, type SortingState } from '@tanstack/react-table'
-import axios, { type AxiosError } from 'axios'
+import { type AxiosError } from 'axios'
 
 export interface UseUsersInput {
   sorting: SortingState
@@ -42,8 +43,8 @@ const getAllUsersFn: ({
     }
   }
 
-  const res = await axios.get<UseUsersResponse>(
-    `/api/users?q=${filter}&${
+  const res = await api.get<UseUsersResponse>(
+    `/users?q=${filter}&${
       sortingParam !== '' ? `sortBy=${sortingParam}&` : ''
     }page=${page}&limit=${perPage}`
   )
