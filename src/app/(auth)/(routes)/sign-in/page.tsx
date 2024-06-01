@@ -59,13 +59,15 @@ export default function SignIn() {
               <a
                 href='/terms'
                 className='underline underline-offset-4 hover:text-primary'
+                tabIndex={-1}
               >
                 Terms of Service
-              </a>{' '}
-              and{' '}
+              </a>
+              {' and '}
               <a
                 href='/privacy'
                 className='underline underline-offset-4 hover:text-primary'
+                tabIndex={-1}
               >
                 Privacy Policy
               </a>

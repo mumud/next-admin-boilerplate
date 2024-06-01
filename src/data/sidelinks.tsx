@@ -1,4 +1,4 @@
-import { type UseMenuResponse } from '@/hooks/use-menu'
+import { type UseMenuResponse } from '@/hooks/api/use-menu'
 import {
   IconLayoutDashboard,
   IconSettings,

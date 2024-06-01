@@ -97,7 +97,7 @@ async function createRole(name: string) {
     } else {
         const menus = await db.menu.findMany({
             where: {
-                name: {
+                path: {
                     not: {
                         contains: '/settings'
                     }

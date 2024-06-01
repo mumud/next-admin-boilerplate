@@ -8,10 +8,13 @@ import { type User } from '@prisma/client'
 import { Button } from '@/components/custom/button'
 import { DataTable } from '@/components/data-table'
 import { useDebounce } from '@/hooks/use-debounce'
-import { useGetUsers } from '@/api/useGetUsers'
+import { useGetUsers } from '@/hooks/api/use-get-users'
 import { userColumns } from './columns'
+import { useModal } from '@/hooks/use-modal-store'
 
 export default function UserPage() {
+  const { onOpen } = useModal()
+
   // sorting state of the table
   const [sorting, setSorting] = useState<SortingState>([])
 
@@ -60,7 +63,11 @@ export default function UserPage() {
           </p>
         </div>
         <div className='flex space-x-2'>
-          <Button size='sm' leftSection={<IconPlus size={16} />}>
+          <Button
+            size='sm'
+            leftSection={<IconPlus size={16} />}
+            onClick={() => onOpen('createUser')}
+          >
             Add User
           </Button>
         </div>

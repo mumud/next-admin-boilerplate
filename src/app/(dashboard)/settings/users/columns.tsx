@@ -32,6 +32,7 @@ export const userColumns = ({
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title='Email' />
     ),
+    enableSorting: false,
   },
   {
     accessorKey: 'phone',

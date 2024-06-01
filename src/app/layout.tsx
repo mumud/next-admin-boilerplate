@@ -1,9 +1,12 @@
 import '@/styles/globals.css'
 
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 import { GeistSans } from 'geist/font/sans'
 import { Toaster } from '@/components/ui/toaster'
 import ThemeProvider from '@/components/providers/theme-provider'
 import AuthProvider from '@/components/providers/session-provider'
+import { QueryProvider } from '@/components/providers/query-provider'
+import ModalPropider from '@/components/providers/modal-propider'
 
 export const metadata = {
   title: 'Next.js Admin',
@@ -31,8 +34,12 @@ export default function RootLayout({
           storageKey='devpintar-theme'
         >
           <AuthProvider>
-            {children}
-            <Toaster />
+            <QueryProvider>
+              <ModalPropider />
+              {children}
+              <Toaster />
+              <ReactQueryDevtools />
+            </QueryProvider>
           </AuthProvider>
         </ThemeProvider>
       </body>

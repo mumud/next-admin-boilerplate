@@ -25,7 +25,7 @@ import {
 import { sidelinks, type SideLink } from '@/data/sidelinks'
 import { cn } from '@/lib/utils'
 import useCheckActiveNav from '@/hooks/use-check-active-nav'
-import { type UseMenuResponse } from '@/hooks/use-menu'
+import { type UseMenuResponse } from '@/hooks/api/use-menu'
 import { Skeleton } from './ui/skeleton'
 
 interface NavProps extends React.HTMLAttributes<HTMLDivElement> {

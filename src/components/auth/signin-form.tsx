@@ -106,6 +106,7 @@ export function SigninForm({ className, ...props }: SigninFormProps) {
                     <Link
                       href='/forgot-password'
                       className='text-sm font-medium text-muted-foreground hover:opacity-75'
+                      tabIndex={-1}
                     >
                       Forgot password?
                     </Link>

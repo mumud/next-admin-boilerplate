@@ -10,7 +10,7 @@ export interface UseUsersInput {
   pagination: PaginationState
 }
 
-export interface UseUsersResponse {
+export interface UsersResponse {
   limit: number
   page: number
   total: number
@@ -22,7 +22,7 @@ const getAllUsersFn: ({
   sorting,
   filter,
   pagination,
-}: UseUsersInput) => Promise<UseUsersResponse> = async ({
+}: UseUsersInput) => Promise<UsersResponse> = async ({
   sorting,
   filter,
   pagination,
@@ -43,7 +43,7 @@ const getAllUsersFn: ({
     }
   }
 
-  const res = await api.get<UseUsersResponse>(
+  const res = await api.get<UsersResponse>(
     `/users?q=${filter}&${
       sortingParam !== '' ? `sortBy=${sortingParam}&` : ''
     }page=${page}&limit=${perPage}`
@@ -53,7 +53,7 @@ const getAllUsersFn: ({
 }
 
 export const useGetUsers = ({ sorting, filter, pagination }: UseUsersInput) => {
-  const { data, isLoading } = useQuery<UseUsersResponse, AxiosError>({
+  const { data, isLoading } = useQuery<UsersResponse, AxiosError>({
     queryKey: ['users', sorting, filter, pagination],
     queryFn: () =>
       getAllUsersFn({

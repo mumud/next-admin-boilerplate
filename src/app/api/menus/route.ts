@@ -1,7 +1,14 @@
 import { NextResponse } from 'next/server'
 import { db } from '@/server/db'
+import { getServerAuthSession } from '@/server/auth'
 
 export const GET = async () => {
+  const session = await getServerAuthSession()
+
+  if (!session) {
+    return NextResponse.json({ message: 'Unauthorized' }, { status: 401 })
+  }
+
   try {
     const menus = await db.menu.findMany({
       select: {
@@ -16,6 +23,13 @@ export const GET = async () => {
             icon: true,
             path: true,
           },
+          where: {
+            roleMenus: {
+              some: {
+                roleId: session.user.role.id,
+              },
+            },
+          },
           orderBy: {
             order: 'asc',
           },
@@ -23,6 +37,11 @@ export const GET = async () => {
       },
       where: {
         parent_id: null,
+        roleMenus: {
+          some: {
+            roleId: session.user.role.id,
+          },
+        },
       },
       orderBy: {
         order: 'asc',

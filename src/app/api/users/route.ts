@@ -1,8 +1,10 @@
 import { type NextRequest, NextResponse } from 'next/server'
 import { type Prisma } from '@prisma/client'
+import { hash } from 'bcrypt'
 import { db } from '@/server/db'
+import { type UserInput } from '@/components/modals/create-user'
 
-const validFields = ['createdAt', 'phone', 'name', 'username', 'email']
+const validFields = ['createdAt', 'name', 'username']
 const validDirections = ['asc', 'desc']
 
 export const GET = async (req: NextRequest) => {
@@ -73,6 +75,36 @@ export const GET = async (req: NextRequest) => {
       totalFiltered,
       data: users,
     })
+  } catch (error) {
+    return NextResponse.json(
+      { message: 'Something went wrong.' },
+      { status: 500 }
+    )
+  }
+}
+
+export const POST = async (req: NextRequest) => {
+  try {
+    const body = (await req.json()) as UserInput
+
+    const passwordHash = await hash(body.password, 12)
+
+    const user = await db.user.create({
+      data: {
+        name: body.name,
+        username: body.username,
+        email: body.email,
+        phoneNumber: body.phoneNumber,
+        password: passwordHash,
+        role: {
+          connect: {
+            id: body.roleId,
+          },
+        },
+      },
+    })
+
+    return NextResponse.json(user)
   } catch (error) {
     return NextResponse.json(
       { message: 'Something went wrong.' },

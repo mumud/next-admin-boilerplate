@@ -1,8 +1,10 @@
+import { type User } from '@prisma/client'
 import { create } from 'zustand'
 
-export type ModalType = ''
+export type ModalType = 'createUser' | 'editUser'
 
 interface ModalData {
+  user?: User
   apiUrl?: string
   query?: Record<string, unknown>
 }
