@@ -27,8 +27,7 @@ export default function SignIn() {
           <Image
             src={LoginVector as string}
             className='relative m-auto'
-            width={301}
-            height={60}
+            width={400}
             alt='Login Vector'
             priority
           />
@@ -49,7 +48,7 @@ export default function SignIn() {
             <div className='flex flex-col space-y-2 text-left'>
               <h1 className='text-2xl font-semibold tracking-tight'>Login</h1>
               <p className='text-sm text-muted-foreground'>
-                Enter your email and password below <br />
+                Enter your username and password below <br />
                 to log into your account
               </p>
             </div>

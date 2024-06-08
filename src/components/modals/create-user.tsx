@@ -235,7 +235,6 @@ export const CreateUserModal = () => {
                         Role
                       </FormLabel>
                       <Select
-                        {...field}
                         disabled={isLoading}
                         onValueChange={field.onChange}
                         defaultValue={field.value}
